@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Al-Pedia — Free Knowledge</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202122;background:#fff}.topbar{min-height:64px;border-bottom:1px solid #a2a9b1;display:flex;align-items:center;gap:16px;padding:10px 24px;position:sticky;top:0;background:#fff;z-index:5}.brand{font-family:Georgia,serif;font-size:28px;color:#202122;text-decoration:none;font-weight:700}.tagline{color:#72777d;font-size:13px}.search{display:flex;flex:1;max-width:680px;margin-left:auto}.search input{flex:1;border:1px solid #a2a9b1;padding:10px 12px;font-size:15px}.search button,.edit-link,.sidebar button,.editor-actions button{border:1px solid #a2a9b1;background:#f8f9fa;padding:10px 14px;cursor:pointer}.edit-link{white-space:nowrap}.layout{display:grid;grid-template-columns:220px minmax(0,900px);gap:34px;max-width:1180px;margin:0 auto;padding:30px 24px;min-height:calc(100vh - 120px)}.sidebar{border-right:1px solid #eaecf0;padding-right:22px}.sidebar h3{font-size:14px;margin:8px 0}.sidebar button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:8px 4px;color:#3366cc}.sidebar button:hover{text-decoration:underline}.sidebar p{font-size:13px;line-height:1.5;color:#54595d}.content{min-width:0}.hero{padding:24px 0 12px;border-bottom:1px solid #a2a9b1}.hero h1,.article h1{font-family:Georgia,serif;font-weight:400;font-size:38px;margin:0 0 8px}.hero p{font-size:18px;color:#54595d;max-width:700px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:24px}.card{border:1px solid #c8ccd1;padding:18px;background:#fff}.card h3{margin-top:0}.card a{color:#3366cc;text-decoration:none}.article{max-width:820px}.article .meta{font-size:13px;color:#72777d;border-bottom:1px solid #eaecf0;padding-bottom:10px;margin-bottom:18px}.article p{font-family:Georgia,serif;font-size:18px;line-height:1.65}.article h2{font-family:Georgia,serif;font-weight:400;border-bottom:1px solid #a2a9b1;padding-bottom:5px;margin-top:30px}.article a{color:#3366cc}.article-actions{display:flex;gap:8px;margin:10px 0 20px}.article-actions button{background:#fff;border:1px solid #a2a9b1;padding:7px 12px;cursor:pointer}.notice{padding:12px 14px;background:#f8f9fa;border:1px solid #eaecf0;margin:16px 0}.results li{margin:14px 0}.results a{color:#3366cc;font-size:18px}.results p{margin:4px 0;color:#54595d}.tag{display:inline-block;background:#eaecf0;padding:4px 8px;margin:4px;font-size:12px}footer{border-top:1px solid #eaecf0;padding:20px 24px;color:#72777d;display:flex;justify-content:space-between;font-size:12px}dialog{border:1px solid #a2a9b1;width:min(720px,92vw);padding:0}dialog::backdrop{background:rgba(0,0,0,.35)}.editor{padding:24px}.editor-head{display:flex;justify-content:space-between;align-items:center}.editor label{display:block;font-weight:600;margin:16px 0}.editor input,.editor select,.editor textarea{display:block;width:100%;margin-top:7px;padding:10px;border:1px solid #a2a9b1;font:inherit}.editor textarea{font-family:ui-monospace,monospace}.icon-btn{border:0;background:transparent;font-size:28px;cursor:pointer}.editor-actions{display:flex;justify-content:flex-end;gap:8px}.primary{background:#3366cc!important;color:white;border-color:#3366cc!important}@media(max-width:800px){.tagline{display:none}.layout{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid #eaecf0;padding:0 0 15px}.cards{grid-template-columns:1fr}.topbar{flex-wrap:wrap}.search{order:3;flex-basis:100%;margin:0}.content{padding-top:10px}}
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" onclick="showHome(); return false;">Al-Pedia</a>
+    <span class="tagline">The free knowledge project</span>
+    <form class="search" onsubmit="searchArticles(event)">
+      <input id="searchInput" type="search" placeholder="Search Al-Pedia..." aria-label="Search">
+      <button>Search</button>
+    </form>
+    <button class="edit-link" onclick="openEditor()">Create article</button>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <h3>Explore</h3>
+      <button onclick="showHome()">Main page</button>
+      <button onclick="showAllArticles()">All articles</button>
+      <button onclick="showCategories()">Categories</button>
+      <h3>Community</h3>
+      <button onclick="showRecent()">Recent changes</button>
+      <button onclick="openEditor()">Create article</button>
+      <h3>About</h3>
+      <p>Al-Pedia is a small Wikipedia-style starter you can customize and connect to a real database later.</p>
+    </aside>
+
+    <section id="content" class="content"></section>
+  </main>
+
+  <footer>
+    <span>Al-Pedia starter</span>
+    <span>Built for learning and customization</span>
+  </footer>
+
+  <dialog id="editorDialog">
+    <form method="dialog" class="editor" onsubmit="saveArticle(event)">
+      <div class="editor-head">
+        <h2 id="editorTitle">Create article</h2>
+        <button type="button" class="icon-btn" onclick="closeEditor()">×</button>
+      </div>
+      <label>Title<input id="articleTitle" required maxlength="100"></label>
+      <label>Category
+        <select id="articleCategory">
+          <option>Technology</option>
+          <option>Science</option>
+          <option>History</option>
+          <option>Culture</option>
+        </select>
+      </label>
+      <label>Article content
+        <textarea id="articleBody" required rows="14" placeholder="Write your article here..."></textarea>
+      </label>
+      <div class="editor-actions">
+        <button type="button" onclick="closeEditor()">Cancel</button>
+        <button class="primary" type="submit">Publish article</button>
+      </div>
+    </form>
+  </dialog>
+<script>
+const seedArticles = [
+  {id:"internet", title:"Internet", category:"Technology", updated:"Today", body:"The Internet is a global system of interconnected computer networks that use standardized communication protocols to exchange information.", sections:[["History","The development of computer networking brought together many technologies and research projects. The modern Internet grew from interconnected networks and open standards."],["How it works","Networks exchange data using protocols such as TCP/IP. Web browsers use the Web to access information hosted on servers around the world."]]},
+  {id:"solar-system", title:"Solar System", category:"Science", updated:"Yesterday", body:"The Solar System is the planetary system that includes the Sun and the objects that orbit it.", sections:[["Planets","The Solar System contains eight recognized planets, along with dwarf planets, moons, asteroids, comets, and other small bodies."],["Exploration","Robotic spacecraft have visited every planet and continue to study the Solar System."]]},
+  {id:"printing-press", title:"Printing press", category:"History", updated:"3 days ago", body:"A printing press is a mechanical device for applying pressure to an inked surface so that an image or text is transferred to a medium.", sections:[["Historical impact","Movable-type printing transformed the production and distribution of written material in Europe and elsewhere."],["Legacy","Printing helped make books and other publications more widely available and supported the spread of ideas."]]},
+  {id:"jazz", title:"Jazz", category:"Culture", updated:"1 week ago", body:"Jazz is a genre of music characterized by improvisation, rhythmic variety, and a history of blending musical traditions.", sections:[["Origins","Jazz developed in the United States in the early twentieth century, drawing on several African American musical traditions."],["Influence","Jazz has influenced popular music, composition, performance, and musical education around the world."]]}
+];
+
+let articles = JSON.parse(localStorage.getItem("al-pedia_articles") || "null") || seedArticles;
+let currentId = null;
+
+function saveData(){localStorage.setItem("al-pedia_articles",JSON.stringify(articles));}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function showHome(){
+  currentId=null;
+  const recent=[...articles].slice(-4).reverse();
+  content.innerHTML=`<div class="hero"><h1>Welcome to Al-Pedia</h1><p>A simple, community-editable encyclopedia starter. Explore an article or create your own.</p></div>
+  <div class="notice"><strong>Getting started:</strong> Search for an article above, browse the topics, or click <a href="#" onclick="openEditor();return false;">Create article</a>.</div>
+  <h2>Featured articles</h2><div class="cards">${recent.map(a=>`<div class="card"><h3><a href="#" onclick="openArticle('${a.id}');return false">${escapeHTML(a.title)}</a></h3><span class="tag">${escapeHTML(a.category)}</span><p>${escapeHTML(a.body.slice(0,150))}…</p></div>`).join("")}</div>`;
+}
+function openArticle(id){
+  const a=articles.find(x=>x.id===id); if(!a)return;
+  currentId=id;
+  content.innerHTML=`<article class="article"><h1>${escapeHTML(a.title)}</h1><div class="meta">From Al-Pedia · Last updated ${escapeHTML(a.updated)}</div>
+  <div class="article-actions"><button onclick="openEditor('${a.id}')">Edit</button><button onclick="showHistory('${a.id}')">View history</button></div>
+  <p><strong>${escapeHTML(a.body)}</strong></p>${a.sections.map(s=>`<section><h2>${escapeHTML(s[0])}</h2><p>${escapeHTML(s[1])}</p></section>`).join("")}
+  <h2>References</h2><p class="notice">Add reliable sources to this section when you expand the article.</p></article>`;
+}
+function showAllArticles(){
+  content.innerHTML=`<div class="hero"><h1>All articles</h1><p>${articles.length} articles in this starter encyclopedia.</p></div><ul class="results">${articles.map(a=>`<li><a href="#" onclick="openArticle('${a.id}');return false">${escapeHTML(a.title)}</a><p>${escapeHTML(a.body.slice(0,180))}…</p><span class="tag">${escapeHTML(a.category)}</span></li>`).join("")}</ul>`;
+}
+function showCategories(){
+  const cats=[...new Set(articles.map(a=>a.category))];
+  content.innerHTML=`<div class="hero"><h1>Categories</h1><p>Browse articles by topic.</p></div><div class="cards">${cats.map(c=>`<div class="card"><h3>${escapeHTML(c)}</h3><p>${articles.filter(a=>a.category===c).length} articles</p><a href="#" onclick="showCategory('${c}');return false">Browse category →</a></div>`).join("")}</div>`;
+}
+function showCategory(c){
+  content.innerHTML=`<div class="hero"><h1>${escapeHTML(c)}</h1></div><ul class="results">${articles.filter(a=>a.category===c).map(a=>`<li><a href="#" onclick="openArticle('${a.id}');return false">${escapeHTML(a.title)}</a><p>${escapeHTML(a.body.slice(0,160))}…</p></li>`).join("")}</ul>`;
+}
+function showRecent(){
+  content.innerHTML=`<div class="hero"><h1>Recent changes</h1><p>Newest articles and edits in this browser.</p></div><ul class="results">${[...articles].reverse().map(a=>`<li><a href="#" onclick="openArticle('${a.id}');return false">${escapeHTML(a.title)}</a><p>Updated ${escapeHTML(a.updated)} · ${escapeHTML(a.category)}</p></li>`).join("")}</ul>`;
+}
+function searchArticles(e){
+  e.preventDefault(); const q=document.getElementById("searchInput").value.trim().toLowerCase();
+  if(!q){showHome();return;}
+  const found=articles.filter(a=>(a.title+" "+a.body+" "+a.category).toLowerCase().includes(q));
+  content.innerHTML=`<div class="hero"><h1>Search results</h1><p>${found.length} result(s) for “${escapeHTML(q)}”.</p></div>${found.length?`<ul class="results">${found.map(a=>`<li><a href="#" onclick="openArticle('${a.id}');return false">${escapeHTML(a.title)}</a><p>${escapeHTML(a.body.slice(0,180))}…</p></li>`).join("")}</ul>`:`<div class="notice">No articles found. Try another search or create a new article.</div>`}`;
+}
+function openEditor(id=null){
+  const dlg=document.getElementById("editorDialog"), a=id?articles.find(x=>x.id===id):null;
+  document.getElementById("editorTitle").textContent=a?"Edit article":"Create article";
+  document.getElementById("articleTitle").value=a?a.title:"";
+  document.getElementById("articleCategory").value=a?a.category:"Technology";
+  document.getElementById("articleBody").value=a?a.body:"";
+  dlg.dataset.editId=id||""; dlg.showModal();
+}
+function closeEditor(){document.getElementById("editorDialog").close();}
+function saveArticle(e){
+  e.preventDefault();
+  const dlg=document.getElementById("editorDialog"), id=dlg.dataset.editId;
+  const title=document.getElementById("articleTitle").value.trim(), category=document.getElementById("articleCategory").value, body=document.getElementById("articleBody").value.trim();
+  if(id){
+    const a=articles.find(x=>x.id===id); a.title=title;a.category=category;a.body=body;a.updated="Just now";
+    openArticle(id);
+  }else{
+    const newId=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+Date.now();
+    articles.push({id:newId,title,category,updated:"Just now",body,sections:[]});
+    openArticle(newId);
+  }
+  saveData(); closeEditor();
+}
+function showHistory(id){
+  const a=articles.find(x=>x.id===id);
+  content.innerHTML=`<div class="hero"><h1>Revision history</h1><p>History for <a href="#" onclick="openArticle('${id}');return false">${escapeHTML(a.title)}</a>.</p></div><div class="notice">This starter stores the current article locally. A production version should save every revision in a database with author, timestamp, and diff information.</div>`;
+}
+showHome();
+
+</script>
+</body>
+</html>
